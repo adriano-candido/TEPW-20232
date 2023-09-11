@@ -2,6 +2,7 @@ package br.edu.unichristus.aula05.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.unichristus.aula05.model.Pessoa;
@@ -14,9 +15,8 @@ public class PessoaController {
 	PessoaService service;
 	
 	@PostMapping("/pessoa")
-	public Pessoa cadastrar(Pessoa p) {
-		
-		return null;
+	public Pessoa cadastrar(@RequestBody Pessoa p) {
+		return service.cadastrar(p);
 	}
 	
 }
