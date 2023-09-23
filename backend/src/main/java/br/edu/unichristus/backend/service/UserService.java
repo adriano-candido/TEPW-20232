@@ -1,10 +1,12 @@
 package br.edu.unichristus.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 import br.edu.unichristus.backend.data.model.User;
+import br.edu.unichristus.backend.exception.CommonsException;
 import br.edu.unichristus.backend.repository.UserRepository;
 
 @Service
@@ -42,10 +44,10 @@ public class UserService {
 	public User findById(Long id) {
 		var user = repository.findById(id);
 		if(user == null || user.isEmpty()) {
-			System.out.println("A ID informada não existe");
-			return null;
+			throw new CommonsException(HttpStatus.NOT_FOUND, 
+					"unichristus.backend.service.user.notfound.exception",
+					"Usuário não encontrado.");
 		}
-		
 		return user.get();
 	}
 	
