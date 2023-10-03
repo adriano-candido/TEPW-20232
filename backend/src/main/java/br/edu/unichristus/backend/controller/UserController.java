@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.unichristus.backend.data.dto.UserDTO;
 import br.edu.unichristus.backend.data.model.User;
 import br.edu.unichristus.backend.service.UserService;
 
@@ -23,12 +24,12 @@ public class UserController {
 	private UserService service;
 
 	@PostMapping
-	public User create(@RequestBody User user) {
+	public UserDTO create(@RequestBody UserDTO user) {
 		return service.save(user);
 	}
 	
 	@PutMapping
-	public User update(@RequestBody User user) {
+	public UserDTO update(@RequestBody UserDTO user) {
 		return service.save(user);
 	}
 	
