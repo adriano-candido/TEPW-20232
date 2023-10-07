@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.edu.unichristus.backend.converter.DozerConverter;
 import br.edu.unichristus.backend.data.dto.UserDTO;
+import br.edu.unichristus.backend.data.dto.UserLowDTO;
 import br.edu.unichristus.backend.data.model.User;
 import br.edu.unichristus.backend.exception.CommonsException;
 import br.edu.unichristus.backend.repository.UserRepository;
@@ -65,8 +66,9 @@ public class UserService {
 		return user.get();
 	}
 	
-	public List<User> findAll(){
-		return repository.findAll();
+	public List<UserLowDTO> findAll(){
+		return DozerConverter.parseListObjects
+				(repository.findAll(), UserLowDTO.class);
 	}
 	
 	
