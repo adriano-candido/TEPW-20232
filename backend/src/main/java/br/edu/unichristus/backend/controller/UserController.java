@@ -14,14 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.unichristus.backend.data.dto.UserDTO;
 import br.edu.unichristus.backend.data.model.User;
 import br.edu.unichristus.backend.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
 	
 	@Autowired
 	private UserService service;
 
+	@Operation(summary = "Cadastra os dados de um usuário | role: [ADMIN]", tags = "User")
 	@PostMapping
 	public UserDTO create(@RequestBody UserDTO user) {
 		return service.save(user);
@@ -32,6 +36,11 @@ public class UserController {
 		return service.save(user);
 	}
 	
+	@Operation(summary = "Retorna os dados de um usuário a partir do ID | role: [ADMIN]", tags = "User")
+	@ApiResponses({ 
+		@ApiResponse(responseCode = "200", description = "Usuário retornado com sucesso"),
+		@ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+		@ApiResponse(responseCode = "500", description = "Erro interno no servidor - unichristus.backend.service.user.notfound.exception") })
 	@GetMapping("/{id}")
 	public User findById(@PathVariable("id") Long id) {
 		return service.findById(id);
