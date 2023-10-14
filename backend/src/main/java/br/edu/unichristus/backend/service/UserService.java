@@ -56,14 +56,14 @@ public class UserService {
 	
 	
 	
-	public User findById(Long id) {
+	public UserDTO findById(Long id) {
 		var user = repository.findById(id);
 		if(user == null || user.isEmpty()) {
 			throw new CommonsException(HttpStatus.NOT_FOUND, 
 					"unichristus.backend.service.user.notfound.exception",
 					"Usuário não encontrado.");
 		}
-		return user.get();
+		return DozerConverter.parseObject(user.get(), UserDTO.class);
 	}
 	
 	public List<UserLowDTO> findAll(){

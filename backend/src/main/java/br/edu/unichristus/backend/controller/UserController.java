@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.unichristus.backend.data.dto.UserDTO;
-import br.edu.unichristus.backend.data.model.User;
 import br.edu.unichristus.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,6 +30,7 @@ public class UserController {
 		return service.save(user);
 	}
 	
+	@Operation(summary = "Edita os dados de um usuário | role: [ADMIN]", tags = "User")
 	@PutMapping
 	public UserDTO update(@RequestBody UserDTO user) {
 		return service.save(user);
@@ -42,15 +42,17 @@ public class UserController {
 		@ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
 		@ApiResponse(responseCode = "500", description = "Erro interno no servidor - unichristus.backend.service.user.notfound.exception") })
 	@GetMapping("/{id}")
-	public User findById(@PathVariable("id") Long id) {
+	public UserDTO findById(@PathVariable("id") Long id) {
 		return service.findById(id);
 	}
 	
+	@Operation(summary = "Deleta um usuário | role: [ADMIN]", tags = "User")
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable("id") Long id) {
 		service.delete(id);
 	}
 	
+	@Operation(summary = "Lista dados de todos os usuários | role: [ADMIN]", tags = "User")
 	@GetMapping
 	public ResponseEntity<?> findAll(){
 		return ResponseEntity.ok(service.findAll());
