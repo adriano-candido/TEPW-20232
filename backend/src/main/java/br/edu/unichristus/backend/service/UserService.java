@@ -15,61 +15,70 @@ import br.edu.unichristus.backend.repository.UserRepository;
 
 @Service
 public class UserService {
-	
+
 	@Autowired
 	private UserRepository repository;
-	
+
 	public UserDTO save(UserDTO dto) {
-		if(dto.getName().length() > 100) {
-			throw new CommonsException(HttpStatus.BAD_REQUEST, 
-					"unichristus.backend.service.user.badrequest.exception", 
+		if (dto.getName().length() > 100) {
+			throw new CommonsException(HttpStatus.BAD_REQUEST, "unichristus.backend.service.user.badrequest.exception",
 					"O nome do usuário excede o limite de 100 caracteres.");
 		}
-		
-		if(!(repository.findByEmail(dto.getEmail()) == null)) {
-			throw new CommonsException(HttpStatus.CONFLICT, 
-					"unichristus.backend.service.user.conflict.exception", 
-					"O email informado já existe.");
+
+		// new line
+		var userUpdate = repository.findByEmail(dto.getEmail());
+
+		if (!(userUpdate == null)) {
+			// new line
+			if (userUpdate.getId() != dto.getId()) {
+				throw new CommonsException(HttpStatus.CONFLICT, "unichristus.backend.service.user.conflict.exception",
+						"O email informado já existe.");
+			}
 		}
-		
-		if(!(repository.findByLogin(dto.getLogin()) == null)) {
-			throw new CommonsException(HttpStatus.CONFLICT, 
-					"unichristus.backend.service.user.conflict.exception", 
-					"O login informado já existe.");
+
+		userUpdate = repository.findByLogin(dto.getLogin());
+
+		if (!(userUpdate == null)) {
+			if (userUpdate.getId() != dto.getId()) {
+				throw new CommonsException(HttpStatus.CONFLICT, "unichristus.backend.service.user.conflict.exception",
+						"O login informado já existe.");
+			}
 		}
-		
-		if(dto.getId() != null) {
+
+		if (dto.getId() != null) {
 			this.findById(dto.getId());
 		}
-		
+
 		var user = DozerConverter.parseObject(dto, User.class);
-		var userDTOSaved = DozerConverter
-				.parseObject(repository.save(user), UserDTO.class);
-		
+		var userDTOSaved = DozerConverter.parseObject(repository.save(user), UserDTO.class);
+
 		return userDTOSaved;
 	}
-	
+
 	public void delete(Long id) {
 		this.findById(id);
 		repository.deleteById(id);
 	}
-	
-	
-	
+
 	public UserDTO findById(Long id) {
 		var user = repository.findById(id);
-		if(user == null || user.isEmpty()) {
-			throw new CommonsException(HttpStatus.NOT_FOUND, 
-					"unichristus.backend.service.user.notfound.exception",
+		if (user == null || user.isEmpty()) {
+			throw new CommonsException(HttpStatus.NOT_FOUND, "unichristus.backend.service.user.notfound.exception",
 					"Usuário não encontrado.");
 		}
 		return DozerConverter.parseObject(user.get(), UserDTO.class);
 	}
-	
-	public List<UserLowDTO> findAll(){
-		return DozerConverter.parseListObjects
-				(repository.findAll(), UserLowDTO.class);
+
+	public List<UserLowDTO> findAll() {
+		return DozerConverter.parseListObjects(repository.findAll(), UserLowDTO.class);
 	}
 	
-	
+	public void loginUser(UserDTO dto) {
+		var userUpdate = repository.findByLoginAndPassword(dto.getLogin(), dto.getPassword());
+		if(userUpdate == null) {
+			throw new CommonsException(HttpStatus.NOT_FOUND, "unichristus.backend.service.user.invalid.credentials.exception",
+					"Credenciais inválidas!");
+		}
+	}
+
 }
