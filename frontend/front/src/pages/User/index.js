@@ -1,5 +1,5 @@
 import React, {useState, useEffect}  from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {FiPower, FiEdit, FiTrash2 } from 'react-icons/fi'
 
 import './styles.css';
@@ -11,11 +11,21 @@ export default function User(){
 
     const [users, setUsers] = useState([]);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         api.get(`api/v1/user`).then(response => {
             setUsers(response.data);
          } )
      } )
+
+     async function editUser(id){
+        try{
+            navigate(`/user/new/${id}`)
+        }catch(err){
+            alert("Falha ao editar usuário! Tente novamente.");
+        }
+     }
 
      async function deleteUser(id){
         try{
@@ -28,9 +38,9 @@ export default function User(){
     return (
         <div className="user-container">
             <header>
-                <img src={logoImage} alt="Logo unichristus"/>>
+                <img src={logoImage} alt="Logo unichristus"/>
                 <span>Bem vindo, <strong>Adriano</strong>!</span>
-                <Link className="button" to="/user/new">Add Novo Usuário</Link>
+                <Link className="button" to="/user/new/0">Add Novo Usuário</Link>
                 <button type="button">
                     <FiPower size={18} color="#251FC5"/>
                 </button>
@@ -47,7 +57,9 @@ export default function User(){
                     <strong>Usuário</strong>
                     <p>{user.login}</p>
 
-                        <button type="button">
+                        <button 
+                        onClick={ () => editUser(user.id)}
+                        type="button">
                             <FiEdit size={20} color="#251FC5"/>
                         </button>
                         <button 

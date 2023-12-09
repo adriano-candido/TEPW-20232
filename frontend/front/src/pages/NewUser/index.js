@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi'
 
 import './styles.css';
@@ -8,18 +8,41 @@ import logoImage from '../../assets/logo.png';
 import api from '../../services/api';
 
 export default function NewUser(){
-
+    const [id, setId] = useState(null);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
 
+    const {userId} = useParams();
+
     const navigate = useNavigate();
+
+    async function loadUser(){
+        try{
+            const response = await api.get(`api/v1/user/${userId}`);
+
+            setId(response.data.id);
+            setName(response.data.name);
+            setEmail(response.data.email);
+            setLogin(response.data.login);
+            setPassword(response.data.password);
+        }catch(err){
+            alert('Erro ao consultar usuário!! Tente novamente.');
+            navigate('/user');
+        }
+    }
+
+    useEffect(() => {
+        if(userId === '0') return;
+        else loadUser();
+    }, [userId])
 
     async function createNewUser(e){
         e.preventDefault();
 
         const data = {
+            id,
             name,
             email,
             login, 
@@ -27,7 +50,12 @@ export default function NewUser(){
         }
 
         try{
-            await api.post('api/v1/user', data);
+            if(userId === '0'){
+                await api.post('api/v1/user', data);
+            }else{
+                data.id = id;
+                await api.put('api/v1/user', data);
+            }
         }catch(err){
             alert('Erro ao salvar usuário! Tente novamente.');
         }

@@ -26,16 +26,24 @@ public class UserService {
 					"O nome do usuário excede o limite de 100 caracteres.");
 		}
 		
-		if(!(repository.findByEmail(dto.getEmail()) == null)) {
+		var userUpdate = repository.findByEmail(dto.getEmail());
+		
+		if(!(userUpdate == null)) {
+			if(userUpdate.getId() != dto.getId()) {
 			throw new CommonsException(HttpStatus.CONFLICT, 
 					"unichristus.backend.service.user.conflict.exception", 
 					"O email informado já existe.");
+			}
 		}
 		
-		if(!(repository.findByLogin(dto.getLogin()) == null)) {
+		userUpdate = repository.findByLogin(dto.getLogin());
+		
+		if(!(userUpdate == null)) {
+			if(userUpdate.getId() != dto.getId()) {
 			throw new CommonsException(HttpStatus.CONFLICT, 
 					"unichristus.backend.service.user.conflict.exception", 
 					"O login informado já existe.");
+			}
 		}
 		
 		if(dto.getId() != null) {
