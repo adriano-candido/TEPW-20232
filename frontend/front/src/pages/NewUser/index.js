@@ -73,7 +73,7 @@ export default function NewUser(){
                 <Link className="back-link" to="/user">
                     <FiArrowLeft size={18} color="#251FC5"/>
                     Home
-                    </Link>>
+                    </Link>
             </section>
             <form onSubmit={createNewUser}>
                 <input placeholder="Nome Completo" 

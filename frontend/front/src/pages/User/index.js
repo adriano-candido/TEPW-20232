@@ -11,6 +11,8 @@ export default function User(){
 
     const [users, setUsers] = useState([]);
 
+    const username = localStorage.getItem('login');
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,13 +37,18 @@ export default function User(){
         }
      }
 
+     async function logout(){
+        localStorage.clear();
+        navigate("/");
+     }
+
     return (
         <div className="user-container">
             <header>
                 <img src={logoImage} alt="Logo unichristus"/>
-                <span>Bem vindo, <strong>Adriano</strong>!</span>
+                <span>Bem vindo, <strong>{username}</strong>!</span>
                 <Link className="button" to="/user/new/0">Add Novo Usuário</Link>
-                <button type="button">
+                <button onClick={logout} type="button">
                     <FiPower size={18} color="#251FC5"/>
                 </button>
             </header>

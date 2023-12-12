@@ -79,5 +79,14 @@ public class UserService {
 				(repository.findAll(), UserLowDTO.class);
 	}
 	
+	public void loginUser(UserDTO dto) {
+		var user = repository.findByLoginAndPassword(dto.getLogin(), dto.getPassword());
+		if(user == null) {
+			throw new CommonsException(HttpStatus.NOT_FOUND, 
+					"unichristus.backend.service.user.notfound.exception",
+					"Crendenciais inválidas!");
+		}
+	}
+	
 	
 }
